@@ -21,6 +21,7 @@ AVG <- 24.815  # average points scored per match by each team of the 1996 - 2016
 #   to be available:
 #
 #   data: results dataset for matches within WND days of match M
+#   w: vector of weights for each match 
 #   teams: (unordered) list of teams obtained from 'data' dataset
 #   AVG: baseline average points scored by all teams
 #
@@ -113,13 +114,13 @@ for (home.team in seq.int(1:length(teams))) {
   for (away.team in seq.int(1:length(teams))) {
 
     if (home.team!=away.team) {  # no need to play each team against itself
+      
+      offh <- ratings$OFF[home.team]
+      defh <- ratings$DEF[home.team]
+      offa <- ratings$OFF[away.team]
+      defa <- ratings$DEF[away.team]
 
-      offh <- ratings$OFF[which(teams==teams[home.team])]
-      defh <- ratings$DEF[which(teams==teams[home.team])]
-      offa <- ratings$OFF[which(teams==teams[away.team])]
-      defa <- ratings$DEF[which(teams==teams[away.team])]
-
-      p <- predict(mod, data.frame(offh, defh, offa, defa), "probs")  # get probabilities for each match
+      p <- predict(mod, data.frame(offh, defh, offa, defa), "probs")  # get probabilities for match
       h.probs[home.team, away.team] <- p[3]  # insert probability of home team winning against away team
       a.probs[home.team, away.team] <- p[2]  # insert probability of away team winning against home team
     }
